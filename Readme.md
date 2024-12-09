@@ -18,6 +18,20 @@ Download [GensStudiosAssessment.zip](https://drive.google.com/file/d/1mTBIBoiztn
 1. Zip your unity project `UnityAssessment_{yourname}.zip`
 1. Compile to an APK named `UnityAssessment_{yourname}.apk`
 
+## Assessment criteria
+For this assessment, you can see a list of [specification](#game-specification) that is expected of a working simple game.
+It gets overwhelming very quickly, but rest assured, you don't have to do all of it.
+At minimum, your game should have the functions/features below:
+1. A joystick that can control player movement.
+1. Player is animated according to its action, e.g. idle and walking.
+1. A camera that follows player as center target.
+1. An area that spawns food when Player enters it.
+
+But try not to do the minimum, we want to see what you can do!
+
+*During the interview, we might ask you to change or add some feature.
+
+
 # Game settings
 Player plays as a fast food restaurant staff that only serves burger and soft drink.
 Customers will appear and form a queue at the counter. When it's a customer's turn, they will place an order for either a burger or a soft drink. The player must then head to the kitchen, prepare the requested item, and deliver it to the counter. After receiving their order, the customer pays, takes their food, and exits the restaurant
