@@ -4,15 +4,15 @@ Hi, we are excited to bring in passionate game and software developer into our t
 Have fun and good luck!
 
 # Firstly
-Download [GensStudiosAssessment.zip](https://drive.google.com/file/d/1mTBIBoiztnL6PrCkXDzaWhkrgzgWlAKy/view?usp=drive_link). This will be the assessment project.
+Download [GensStudiosAssessment.zip](https://drive.google.com/file/d/1mTBIBoiztnL6PrCkXDzaWhkrgzgWlAKy/view?usp=drive_link). This will be the assessment project. Unzip the file to get the Unity project and all of the assets required by the assessment is available in the project directory `GenStudiosAssessment\Assets\Assessment\Assets\`
 
 # Submission Requirement
 1. Unity 2022.3.16f
-1. All assets required can be found in `Assets\Assessment\Assets` directory.
-1. All scripts must be located in `Assets\Assessment\Scripts` directory.
-1. All prefabs must be located in `Assets\Assessment\Prefabs` directory.
-1. Any new assets must be located in `Assets\Assessment\`
-1. Assessment scene: Create a new scene named `AssessmentScene` by cloning `SampleScene`
+1. All assets required can be found in **Unity project** `GenStudiosAssessment\Assets\Assessment\Assets` directory.
+1. All scripts must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\Scripts` directory.
+1. All prefabs must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\Prefabs` directory.
+1. Any new assets must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\`
+1. Assessment scene: Create a new scene in Unity named `AssessmentScene` by cloning `SampleScene`
 
 ## File submission
 1. Zip your unity project `UnityAssessment_{yourname}.zip`
