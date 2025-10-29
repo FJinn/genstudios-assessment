@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bdb87391e7e7c443b9b722b34250793, type: 3}
+  m_Name: GameData
+  m_EditorClassIdentifier: 
+  maxCustomerAmount: 5
+  secondsToSpawnCustomer: 2
+  secondsForCustomerToGetAngry: 3
+  maxCustomerInQueue: 4
+  secondsForCustomerToTakeFood: 0.5
+  moneyPrefab: {fileID: 3177412525952536624, guid: d48bbf2becd9bec4a9da5a950faca8f4,
+    type: 3}
+  secondsToMakeBurger: 2
+  secondsToMakeSoftDrink: 1
+  gapBetweenStackMoney: {x: 0.6, y: 0.128, z: 0.35}
+  stackMoneyRowAndColumn: {x: 2, y: 3}
+  oneMoneyUnitValue: 1
+  allItemData: []
+  customerPrefab: {fileID: 7366609620275308467, guid: 3b6ec1d26e75e704d891c46816ff3585,
+    type: 3}
+  secondsToDisplayEmoji: 2
+  happyEmojiSprite: {fileID: 0}
+  angryEmojiSprite: {fileID: 0}
