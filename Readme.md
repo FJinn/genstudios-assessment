@@ -3,20 +3,26 @@ Hi, we are excited to bring in passionate game and software developer into our t
 
 Have fun and good luck!
 
-# Firstly
-Download [GensStudiosAssessment.zip](https://drive.google.com/file/d/1mTBIBoiztnL6PrCkXDzaWhkrgzgWlAKy/view?usp=drive_link). This will be the assessment project. Unzip the file to get the Unity project and all of the assets required by the assessment is available in the project directory `GenStudiosAssessment\Assets\Assessment\Assets\`
+You can see our expected result in [Docs Directory](Docs)
 
-# Submission Requirement
-1. Unity 2022.3.16f
-1. All assets required can be found in **Unity project** `GenStudiosAssessment\Assets\Assessment\Assets` directory.
-1. All scripts must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\Scripts` directory.
-1. All prefabs must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\Prefabs` directory.
-1. Any new assets must be located in **Unity project** `GenStudiosAssessment\Assets\Assessment\`
+# Firstly
+1. Install Unity editor version `2022.3.62f`.
+1. Clone this project to your local machine.
+1. The Unity project that you should use and work on is the `GenStudiosAssessmentUnityProject` directory.
+1. All assets required can be found in `GenStudiosAssessmentUnityProject\Assets\Assessment\Assets` directory.
+
+# Instruction
+1. Use Unity Editor `2022.3.62f`
+1. All new assets must be added in `GenStudiosAssessmentUnityProject\Assets\Assessment\Assets` directory.
+1. All scripts must be located in `GenStudiosAssessmentUnityProject\Assets\Assessment\Scripts` directory.
+1. All prefabs must be located in `GenStudiosAssessmentUnityProject\Assets\Assessment\Prefabs` directory.
+1. Any new assets must be located in `GenStudiosAssessmentUnityProject\Assets\Assessment\`
 1. Assessment scene: Create a new scene in Unity named `AssessmentScene` by cloning `SampleScene`
 
 ## File submission
-1. Zip your unity project `UnityAssessment_{yourname}.zip`
-1. Compile to an APK named `UnityAssessment_{yourname}.apk`
+1. Zip your unity project as `UnityAssessment_{yourname}.zip`
+1. Compile to an APK as `UnityAssessment_{yourname}.apk`
+1. Send us the download link to the files above.
 
 ## Assessment criteria
 For this assessment, you can see a list of [specification](#game-specification) that is expected of a working simple game.
@@ -30,7 +36,6 @@ At minimum, your game should have the functions/features below:
 But try not to do the minimum, we want to see what you can do!
 
 *During the interview, we might ask you to change or add some feature.
-
 
 # Game settings
 Player plays as a fast food restaurant staff that only serves burger and soft drink.
