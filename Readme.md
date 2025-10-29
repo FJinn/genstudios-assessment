@@ -23,6 +23,7 @@ You can see our expected result in [Docs Directory](Docs)
 1. Zip your unity project as `UnityAssessment_{yourname}.zip`
 1. Compile to an APK as `UnityAssessment_{yourname}.apk`
 1. Send us the download link to the files above.
+1. Send us the Github link to your project.
 
 ## Assessment criteria
 For this assessment, you can see a list of [specification](#game-specification) that is expected of a working simple game.
