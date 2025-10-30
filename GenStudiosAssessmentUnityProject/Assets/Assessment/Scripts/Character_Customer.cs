@@ -9,9 +9,12 @@ public class Character_Customer : CharacterBase
 
     EItemType itemOrder;
 
-    Transform targetTransform;
+    Vector3 targetPosition;
     //cache
     Coroutine moveRoutine;
+
+    // only considered leave queue when it is deinitialize
+    bool inQueue;
 
     void IncreaseOutfitIndex()
     {
@@ -33,14 +36,36 @@ public class Character_Customer : CharacterBase
         IncreaseOutfitIndex();
 
         currentMood = EMood.None;
+        inQueue = false;
+
+        emojiBubble.Initialize();
 
         gameObject.SetActive(true);
     }
 
     void Deinitialize()
     {
+        inQueue = false;
+        foreach (ItemBase element in itemsStack)
+        {
+            element.Deinitialize();
+        }
+        itemsStack.Clear();
+
+        animator.SetBool(isCarryIdleID, false);
+        
         emojiBubble.HideEmoji();
         gameObject.SetActive(false);
+    }
+
+    public void SetInQueue(bool isInQueue)
+    {
+        inQueue = isInQueue;
+    }
+
+    public bool GetInQueue()
+    {
+        return inQueue;
     }
 
     public EItemType GetOrder()
@@ -53,12 +78,16 @@ public class Character_Customer : CharacterBase
         // randomly pick item for now
         // 0 is none, so have to choose between 1 or 2
         itemOrder = Random.Range(0, 1f) >= 0.5f ? EItemType.Burger : EItemType.SoftDrink;
+
+        emojiBubble.ShowOrder(true, GameManager.Instance.gameData.allItemData.Find(x => x.itemType == itemOrder).itemName);
     }
 
     public void InitializeAngry()
     {
         currentMood = EMood.Angry;
         emojiBubble.ShowEmoji(currentMood);
+
+        animator.SetBool(isAngryID, true);
     }
 
     public void TakeItem(ItemBase item)
@@ -67,17 +96,23 @@ public class Character_Customer : CharacterBase
         InitializeHappy();
 
         itemOrder = EItemType.None;
+
+        AddItemToHand(item);
     }
 
     void InitializeHappy()
     {
+        animator.SetBool(isAngryID, false);
         currentMood = EMood.Happy;
         emojiBubble.ShowEmoji(currentMood);
     }
 
-    public void MoveToTargetTransform(Transform target, bool deinitializeWhenDone = false)
+    public void MoveToTargetTransform(Vector3 targetPos, bool deinitializeWhenDone = false)
     {
-        targetTransform = target;
+        // can have better structure such as on mood changed, we change the animator bool
+        animator.SetBool(isAngryID, false);
+
+        targetPosition = targetPos;
 
         if (moveRoutine != null)
         {
@@ -88,19 +123,26 @@ public class Character_Customer : CharacterBase
 
     IEnumerator MoveUpdate(bool deinitializeWhenDone)
     {
-        while (Vector3.Distance(transform.position, targetTransform.position) > 0.01f) // Continue moving while we're not very close to the target
+        SetWalkAnimation(true);
+        
+        while (Vector3.Distance(transform.position, targetPosition) > 0.01f) // Continue moving while we're not very close to the target
         {
             // Move towards the target at the specified speed
             float step = characterData.moveSpeed * Time.deltaTime; // Calculate how far to move this frame
-            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, step);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
+
+            Quaternion targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // Smooth rotation
 
             // Yield return null to continue the movement in the next frame
             yield return null;
         }
 
         // Ensure we set the final position exactly to the target
-        transform.position = targetTransform.position;
+        transform.position = targetPosition;
 
+        SetWalkAnimation(false);
+        
         if (deinitializeWhenDone)
         {
             Deinitialize();

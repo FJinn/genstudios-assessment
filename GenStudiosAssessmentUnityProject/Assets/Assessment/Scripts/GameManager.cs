@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public SO_GameData gameData;
     public Spawner spawner;
 
+    public Transform customerSpawnParentTransform;
     public Transform customerSpawnTransform;
     public Transform customerExitTransform;
 

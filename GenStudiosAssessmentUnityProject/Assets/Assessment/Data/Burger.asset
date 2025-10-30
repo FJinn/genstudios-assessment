@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c391133f72821494d8dbec04a4734002, type: 3}
   m_Name: Burger
   m_EditorClassIdentifier: 
-  itemName: 
+  itemName: Burger
   itemSprite: {fileID: 0}
-  itemType: 0
-  value: 0
+  itemPrefab: {fileID: 7868646081051417890, guid: 755bb759a21dc9c47b415702ef5a18c9,
+    type: 3}
+  itemType: 1
+  value: 3
+  secondsToSpawn: 2
+  resetSpawnSecondsIfFailed: 1

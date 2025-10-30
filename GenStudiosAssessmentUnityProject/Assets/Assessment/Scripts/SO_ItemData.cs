@@ -10,6 +10,8 @@ public class SO_ItemData : ScriptableObject
     public GameObject itemPrefab;
     public EItemType itemType;
     public int value;
+    public float secondsToSpawn = 2f;
+    public bool resetSpawnSecondsIfFailed = false;
 }
 
 public enum EItemType

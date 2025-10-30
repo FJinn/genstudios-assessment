@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterBase : MonoBehaviour
@@ -15,15 +13,22 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] protected SO_CharacterData characterData;
     [SerializeField] protected Rigidbody body;
     [SerializeField] protected EmojiBubble emojiBubble;
+    [SerializeField] protected Animator animator;
     [SerializeField] Transform handTransform;
 
-    protected EMood currentMood;
+    protected int isWalkID = Animator.StringToHash("IsWalk");
+    protected int isAngryID = Animator.StringToHash("IsAngry");
+    protected int isCookingID = Animator.StringToHash("IsCooking");
+    protected int isCarryIdleID = Animator.StringToHash("IsCarryIdle");
+    protected int isCarryWalkID = Animator.StringToHash("IsCarryWalk");
 
-    public Stack<ItemBase> itemsStack = new Stack<ItemBase>();
+    protected EMood currentMood;
+    // use list instead of stack for flexibiliity, such as able to put second item on counter
+    protected List<ItemBase> itemsStack = new List<ItemBase>();
 
     bool CanAddItemToHand()
     {
-        return itemsStack.Count >= characterData.maxCarryItemAmount;
+        return itemsStack.Count < characterData.maxCarryItemAmount;
     }
 
     bool CanAddItemTypeToHand(EItemType itemType)
@@ -36,29 +41,64 @@ public class CharacterBase : MonoBehaviour
         return characterData.itemCarryRule switch
         {
             EItemCarryRule.None => true,
-            EItemCarryRule.OneType => (itemsStack.Count > 0 && itemsStack.Peek().ItemType == itemType) || itemsStack.Count == 0,
+            EItemCarryRule.OneType => (itemsStack.Count > 0 && itemsStack[0].ItemType == itemType) || itemsStack.Count == 0,
             _ => true
         };
+    }
+
+    public bool EvaluateAddItemToHand(EItemType itemType)
+    {
+        return CanAddItemToHand() && CanAddItemTypeToHand(itemType);
     }
 
     public bool AddItemToHand(ItemBase item)
     {
         // either add item to hand evaluation is cannot, return false
-        if (!CanAddItemToHand() || !CanAddItemTypeToHand(item.ItemType))
+        if (!EvaluateAddItemToHand(item.ItemType))
         {
+            Debug.LogWarning($"Failed to add item to hand! Due to: Cannot add item = {!CanAddItemToHand()} or Cannot add item type = {!CanAddItemTypeToHand(item.ItemType)}!");
             return false;
         }
 
-        item.transform.position = handTransform.position;
-        item.transform.rotation = handTransform.rotation;
+        itemsStack.Add(item);
 
-        itemsStack.Push(item);
+        item.transform.position = handTransform.position + Vector3.up * GameManager.Instance.gameData.carryItemGapDistance * itemsStack.Count;
+        item.transform.rotation = handTransform.rotation * Quaternion.Euler(-90, 0, 90);
+        item.transform.SetParent(handTransform);
+
+        animator.SetBool(isCarryIdleID, true);
 
         return true;
     }
-    
-    public ItemBase GetItemOnHand()
+
+    public ItemBase GetItemOnHand(EItemType specificItem = EItemType.None)
     {
-        return itemsStack.Pop();
+        ItemBase targetItem;
+        if (specificItem != EItemType.None)
+        {
+            targetItem = itemsStack.Find(x => x.ItemType == specificItem);
+        }
+        else // get last item if not specific
+        {
+            targetItem = itemsStack.Count == 0 ? null : itemsStack[^1];
+        }
+        if (targetItem != null)
+        {
+            itemsStack.Remove(targetItem);
+
+            animator.SetBool(isCarryIdleID, itemsStack.Count > 0);
+        }
+        return targetItem;
+    }
+
+    public List<ItemBase> GetAllItemsOnHand()
+    {
+        return itemsStack;
+    }
+    
+    protected void SetWalkAnimation(bool active)
+    {
+        animator.SetBool(isCarryWalkID, active? itemsStack.Count > 0 : false);
+        animator.SetBool(isWalkID, active? itemsStack.Count == 0 : false);
     }
 }

@@ -53,7 +53,7 @@ public class MoneyStack : MonoBehaviour
         currentLastActiveIndex += 1;
 
         // instead of linQ find, just cache last active index since the money will be all deactivate together once collect
-        if (currentLastActiveIndex > spawnedMoney.Count)
+        if (currentLastActiveIndex >= spawnedMoney.Count)
         {
             // doesn't exist in pool, so need to create a new one and make this gameobject as parent
             GameObject itemObject = Instantiate(gameData.moneyPrefab, transform);
@@ -76,16 +76,9 @@ public class MoneyStack : MonoBehaviour
         Vector2Int rowsAndColumns = gameData.stackMoneyRowAndColumn;
 
         // Calculate the row and column based on the index
-        int row = indexInList / rowsAndColumns.y;         // Integer division (gives row number)
+        int row = (indexInList / rowsAndColumns.y) % rowsAndColumns.x; // Integer division (gives row number)
         int column = indexInList % rowsAndColumns.y;      // Modulo (gives column number)
-        int yOffset = indexInList / rowsAndColumns.x * rowsAndColumns.y;
-
-        // Check if the row exceeds the maximum allowed rows and reset if needed
-        if (row >= rowsAndColumns.x)
-        {
-            // loop back to the first row
-            row = 0;
-        }
+        int yOffset = indexInList / (rowsAndColumns.x * rowsAndColumns.y);
 
         // Calculate the position based on row, column, and gap
         Vector3 newPosition = new Vector3(
@@ -95,7 +88,7 @@ public class MoneyStack : MonoBehaviour
         );
 
         // Set the new position for the object
-        obj.transform.position = newPosition;
+        obj.transform.localPosition = newPosition;
 
         obj.SetActive(true);
     }

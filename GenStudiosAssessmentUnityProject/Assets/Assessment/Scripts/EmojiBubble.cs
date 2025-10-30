@@ -1,11 +1,13 @@
 using System.Collections;
 using Cinemachine;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EmojiBubble : MonoBehaviour
 {
     [SerializeField] Image emojiImage;
+    [SerializeField] TMP_Text orderText;
 
     Camera mainCamera;
     // cache 
@@ -13,7 +15,7 @@ public class EmojiBubble : MonoBehaviour
 
     SO_GameData gameData;
 
-    private void Start()
+    public void Initialize()
     {
         // Initially hide the emoji bubble
         gameObject.SetActive(false);
@@ -33,11 +35,13 @@ public class EmojiBubble : MonoBehaviour
     {
         Sprite targetSprite = mood switch
         {
-            CharacterBase.EMood.None => null,
+            CharacterBase.EMood.None => gameData.orderSprite,
             CharacterBase.EMood.Happy => gameData.happyEmojiSprite,
             CharacterBase.EMood.Angry => gameData.angryEmojiSprite,
             _ => null
         };
+
+        ShowOrder(false);
 
         // Set the emoji image to the selected emoji
         emojiImage.sprite = targetSprite;
@@ -47,6 +51,23 @@ public class EmojiBubble : MonoBehaviour
 
         // Start the coroutine to hide the emoji after a duration
         // StartCoroutine(HideEmojiAfterDelay());
+    }
+    
+    // probably can have a better structure
+    public void ShowOrder(bool active, string orderDisplayName = null)
+    {
+        orderText.gameObject.SetActive(active);
+        if (!active)
+        {
+            return;
+        }
+        else
+        {
+            gameObject.SetActive(true);
+        }
+
+        emojiImage.sprite = gameData.orderSprite;
+        orderText.text = orderDisplayName;
     }
 
     // Coroutine to hide the emoji after a set duration

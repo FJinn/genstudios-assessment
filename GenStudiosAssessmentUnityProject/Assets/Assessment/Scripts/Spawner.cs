@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,12 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     // object pooling
-    List<Character_Customer> spawnedCustomers;
-    List<ItemBase> spawnedItems;
+    List<Character_Customer> spawnedCustomers = new List<Character_Customer>();
+    List<ItemBase> spawnedItems = new List<ItemBase>();
+
+    // notify that customer has spawned
+    // for assessment, there is only 1 counter, so don't need to set rules for which counter to go
+    public static Action<Character_Customer> onCustomerSpawned;
 
     Coroutine spawnCustomerRoutine;
     // cache customer spawn time
@@ -18,6 +23,8 @@ public class Spawner : MonoBehaviour
     {
         gameData = GameManager.Instance.gameData;
         secondToSpawnCustomer = new WaitForSeconds(gameData.secondsToSpawnCustomer);
+
+        StartSpawnCustomer();
     }
 
     public void StartSpawnCustomer()
@@ -47,6 +54,7 @@ public class Spawner : MonoBehaviour
         {
             // exist in the pool, but not active. Use and initialize it.
             found.Initialize();
+            onCustomerSpawned?.Invoke(found);
             return;
         }
 
@@ -57,11 +65,16 @@ public class Spawner : MonoBehaviour
             // spawnedCustomer list count should be same with max customer amount
             return;
         }
-        Character_Customer newCustomer = Instantiate(gameData.customerPrefab, GameManager.Instance.customerSpawnTransform);
+        Character_Customer newCustomer = Instantiate(gameData.customerPrefab, GameManager.Instance.customerSpawnParentTransform);
+        // set its location
+        newCustomer.transform.position = GameManager.Instance.customerSpawnTransform.position;
         // cache it in pool
         spawnedCustomers.Add(newCustomer);
+        newCustomer.gameObject.name = "Customer" + spawnedCustomers.Count;
         // don't forget to initialize
         newCustomer.Initialize();
+        
+        onCustomerSpawned?.Invoke(newCustomer);
     }
     
     // maybe can create a template
@@ -87,10 +100,15 @@ public class Spawner : MonoBehaviour
     IEnumerator SpawnCustomerUpdate()
     {
         // ToDo:: set rule for this such as under x conditions spawn will be called and stop instead of this infinite runs
-        while(true)
+        while (true)
         {
             SpawnCustomer();
             yield return secondToSpawnCustomer;
         }
+    }
+
+    public List<Character_Customer> GetAllCustomers()
+    {
+        return spawnedCustomers;
     }
 }

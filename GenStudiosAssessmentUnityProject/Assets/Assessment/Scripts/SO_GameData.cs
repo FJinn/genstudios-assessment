@@ -25,11 +25,13 @@ public class SO_GameData : ScriptableObject
     /// Let the food to stay on the table for x before the customer can take it
     /// </summary>
     public float secondsForCustomerToTakeFood = 0.5f;
+    /// <summary>
+    /// some delay before getting new customer in queue
+    /// </summary>
+    public float secondsToGetNewCustomerInQueue = 0.5f;
 
     [Header("Items")]
     public GameObject moneyPrefab;
-    public float secondsToMakeBurger = 2f;
-    public float secondsToMakeSoftDrink = 1f;
     public Vector3 gapBetweenStackMoney = new Vector3(0.6f, 0.128f, 0.35f);
     public Vector2Int stackMoneyRowAndColumn = new Vector2Int(2, 3);
     public int oneMoneyUnitValue = 1;
@@ -42,6 +44,8 @@ public class SO_GameData : ScriptableObject
     public float secondsToDisplayEmoji = 2f;
     public Sprite happyEmojiSprite;
     public Sprite angryEmojiSprite;
+    public Sprite orderSprite;
     public float queueGapDistance = 0.85f;
+    public float carryItemGapDistance = 0.5f;
 
 }

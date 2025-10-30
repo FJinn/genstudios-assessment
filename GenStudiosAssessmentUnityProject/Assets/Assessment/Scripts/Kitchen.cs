@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,18 +6,35 @@ using UnityEngine.TextCore.Text;
 
 public class Kitchen : MonoBehaviour
 {
-    public EItemType spawnItemType;
+    [SerializeField] EItemType spawnItemType;
+    [SerializeField] ActionTimerUI actionTimerUI;
 
     CharacterBase currentInteractingCharacter;
 
     // cache remaining action time if action is stopped halfway
     float remainingActionTime;
+    // item spawned on kitchen, for now assume only 1 at a time
+    ItemBase spawnedItem;
 
     void OnTriggerEnter(Collider other)
     {
         currentInteractingCharacter = other.GetComponent<CharacterBase>();
 
-        RunActionTimer();
+        // should only run on player for now
+        if (currentInteractingCharacter is not PlayerController)
+        {
+            currentInteractingCharacter = null;
+            return;
+        }
+
+        if (spawnedItem == null && currentInteractingCharacter.EvaluateAddItemToHand(spawnItemType))
+        {
+            RunActionTimer();
+            return;
+        }
+        // it shouldn't run if player hand is full
+        // if item has been spawned, it should be on player hand already
+        // AddItemToHand();
     }
 
     void OnTriggerExit(Collider other)
@@ -24,23 +42,40 @@ public class Kitchen : MonoBehaviour
         currentInteractingCharacter = other.GetComponent<CharacterBase>();
 
         // should only run on player for now
-        if (currentInteractingCharacter is PlayerController playerController)
+        if (currentInteractingCharacter is not PlayerController playerController)
         {
-            // The currentInteractingCharacter is successfully cast to PlayerController
-            // Now can use the playerController object safely
-            remainingActionTime = playerController.StopActionTimer();
+            currentInteractingCharacter = null;
+            return;
         }
+        // The currentInteractingCharacter is successfully cast to PlayerController
+        // Now can use the playerController object safely
+        remainingActionTime = playerController.StopActionTimer();
+
+        if (GameManager.Instance.gameData.allItemData.Find(x => x.itemType == spawnItemType).resetSpawnSecondsIfFailed)
+        {
+            actionTimerUI.Deactivate();
+        }
+        
+        currentInteractingCharacter = null;
     }
 
     void SpawnItem()
     {
         // reset remaining action timer 
         remainingActionTime = 0;
-        ItemBase spawnedItem = GameManager.Instance.spawner.SpawnItem(spawnItemType);
+        spawnedItem = GameManager.Instance.spawner.SpawnItem(spawnItemType);
+    }
+
+    void AddItemToHand()
+    {
         bool addSuccess = currentInteractingCharacter.AddItemToHand(spawnedItem);
         // handle on adding time to hand success
         if (addSuccess)
         {
+            // reset spawned item since it is not in player hand
+            spawnedItem = null;
+            // action timer ui should be cleaned 
+            actionTimerUI.Deactivate();
             // ToDo:: maybe some visual/audio feedback
             return;
         }
@@ -55,10 +90,16 @@ public class Kitchen : MonoBehaviour
         {
             // The currentInteractingCharacter is successfully cast to PlayerController
             // Now can use the playerController object safely
-            playerController.StartActionTimer(GetActionSecondsBasedOnType(),
+            playerController.StartActionTimer(
+            GetInitialActionTime(),
+            GetActionSecondsBasedOnType(),
+            actionTimerUI,
             () =>
             {
                 SpawnItem();
+                actionTimerUI.DoneAction();
+                // add item to hand, character should still be interactive area, else the timer will be stopped and this will not be called
+                AddItemToHand();
             });
         }
         else
@@ -72,20 +113,25 @@ public class Kitchen : MonoBehaviour
     /// 
     /// </summary>
     /// <returns>-1 if the type is None</returns>
-    public float GetActionSecondsBasedOnType()
+    float GetActionSecondsBasedOnType()
     {
-        if(remainingActionTime > 0)
-        {
-            return remainingActionTime;
-        }
-
         return spawnItemType switch
         {
             EItemType.None => -1,
-            EItemType.Burger => GameManager.Instance.gameData.secondsToMakeBurger,
-            EItemType.SoftDrink => GameManager.Instance.gameData.secondsToMakeSoftDrink,
+            EItemType.Burger => GameManager.Instance.gameData.allItemData.Find(x => x.itemType == EItemType.Burger).secondsToSpawn,
+            EItemType.SoftDrink => GameManager.Instance.gameData.allItemData.Find(x => x.itemType == EItemType.SoftDrink).secondsToSpawn,
             _ => -1
         };
     }
 
+    float GetInitialActionTime()
+    {
+        return spawnItemType switch
+        {
+            EItemType.None => 0,
+            EItemType.Burger => GameManager.Instance.gameData.allItemData.Find(x => x.itemType == EItemType.Burger).resetSpawnSecondsIfFailed ? 0 : remainingActionTime,
+            EItemType.SoftDrink => GameManager.Instance.gameData.allItemData.Find(x => x.itemType == EItemType.SoftDrink).resetSpawnSecondsIfFailed ? 0 : remainingActionTime,
+            _ => 0
+        };
+    }
 }
