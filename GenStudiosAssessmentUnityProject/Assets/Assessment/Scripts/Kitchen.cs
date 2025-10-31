@@ -27,15 +27,21 @@ public class Kitchen : MonoBehaviour
             return;
         }
 
-        if (spawnedItem == null && currentInteractingCharacter.EvaluateAddItemToHand(spawnItemType))
-        {
-            RunActionTimer();
-            return;
-        }
+        AddItemToPlayer();
+
         // it shouldn't run if player hand is full
         // if item has been spawned, it should be on player hand already
         // AddItemToHand();
     }
+
+    void AddItemToPlayer()
+    {
+        if (spawnedItem == null && currentInteractingCharacter.EvaluateAddItemToHand(spawnItemType))
+        {
+            RunActionTimer();
+        }
+    }
+    
 
     void OnTriggerExit(Collider other)
     {
@@ -100,6 +106,8 @@ public class Kitchen : MonoBehaviour
                 actionTimerUI.DoneAction();
                 // add item to hand, character should still be interactive area, else the timer will be stopped and this will not be called
                 AddItemToHand();
+
+                AddItemToPlayer();
             });
         }
         else

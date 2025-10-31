@@ -91,10 +91,10 @@ public class EmojiBubble : MonoBehaviour
         if (gameObject.activeSelf && mainCamera != null)
         {
             // Get the direction from the emoji bubble to the camera
-            Vector3 directionToCamera = mainCamera.transform.position - transform.position;
+            Vector3 directionToCamera = mainCamera.transform.position - emojiImage.transform.position;
 
             // Set the y component to 0 to prevent vertical flipping (rotation on X and Z axes)
-            directionToCamera.y = 0;
+            // directionToCamera.y = 0;
 
             // If the direction is non-zero, rotate the emoji to face the camera
             if (directionToCamera != Vector3.zero)
@@ -103,7 +103,9 @@ public class EmojiBubble : MonoBehaviour
                 Quaternion lookRotation = Quaternion.LookRotation(directionToCamera);
 
                 // Apply the rotation to the emoji bubble
-                transform.rotation = lookRotation;
+                emojiImage.transform.rotation = lookRotation * Quaternion.Euler(0, 180, 0);
+
+                emojiImage.transform.position = transform.position + mainCamera.transform.up;
             }
         }
     }

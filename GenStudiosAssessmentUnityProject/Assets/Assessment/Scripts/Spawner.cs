@@ -53,7 +53,8 @@ public class Spawner : MonoBehaviour
         if (found)
         {
             // exist in the pool, but not active. Use and initialize it.
-            found.Initialize();
+            found.Initialize();// set its location
+            found.transform.position = GameManager.Instance.customerSpawnTransform.position;
             onCustomerSpawned?.Invoke(found);
             return;
         }

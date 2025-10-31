@@ -133,7 +133,7 @@ public class OrderSystemController : MonoBehaviour
 
     void UpdateCustomerInQueuePosition(Character_Customer customer)
     {
-        Vector3 backwardDirection = customerQueue[0].transform.forward * -1;
+        Vector3 backwardDirection = queueStartingTransform.forward;
         int customerIndexInQueue = customerQueue.IndexOf(customer);
         Vector3 targetPosition = queueStartingTransform.position + (gameData.queueGapDistance * customerIndexInQueue * backwardDirection);
         customer.MoveToTargetTransform(targetPosition);
